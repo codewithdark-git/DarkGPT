@@ -58,7 +58,7 @@ def main():
         st.header("DarkGPT")
 
         # Define models
-        models = [ "gemini-pro", "pi", "airoboros-70b"]
+        # models = ["airoboros-70b"]
 
         # Sidebar (left side) - New chat button
         if st.sidebar.button("New Chat"):
@@ -79,7 +79,7 @@ def main():
 
         # Model selection dropdown
         st.sidebar.markdown("---")
-        selected_model = st.sidebar.selectbox("Select Model", models, index=0)
+        # selected_model = st.sidebar.write(models, index=0)
 
         # Clear Chat History button
         if st.sidebar.button("Clear Chat History"):
@@ -95,7 +95,7 @@ def main():
         if user_input:
             client = Client()
             response = client.chat.completions.create(
-                model=selected_model,
+                model="airoboros-70b",
                 messages=[{"role": "user", "content": user_input}],
             )
             bot_response = response.choices[0].message.content
