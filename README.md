@@ -20,7 +20,7 @@ To get started with the GPT Chat Explorer, follow these steps:
 
 1. **Clone the Repository:**
    ```
-   git clone https://github.com/codewithdark-git/DarkGPT-Chat-Bot.git
+   git clone https://github.com/codewithdark-git/DarkGPT-Chatbot.git
    ```
 
 2. **Install Dependencies:**
