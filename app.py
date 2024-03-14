@@ -79,19 +79,7 @@ def main():
         # Model selection dropdown
         st.sidebar.markdown("---")
 
-        # Define display names for models
-        models = {
-            "Airoboros 70B": "airoboros-70b",
-             "GPT-4 Turbo" : "gpt-4-turbo"
-        }
 
-        # print(models.keys())
-        # print(models.values())
-
-        # Create the select box
-        selected_model_display_name = st.sidebar.selectbox("Select Model", list(models.keys()), index=0)
-
-        selected_model = models[selected_model_display_name]
         # Clear Chat History button
         if st.sidebar.button("Clear Chat History"):
             st.session_state.chat_history.clear()
@@ -106,7 +94,7 @@ def main():
         if user_input:
             client = Client()
             response = client.chat.completions.create(
-                model=selected_model,
+                model="airoboros-70b",
                 messages=[{"role": "user", "content": user_input}],
             )
             bot_response = response.choices[0].message.content
