@@ -1,3 +1,4 @@
+
 import streamlit as st
 from g4f.client import Client
 import sqlite3
@@ -58,7 +59,7 @@ def main():
         st.header("DarkGPT")
 
         # Define models
-        # models = ["airoboros-70b"]
+        # models = ["gpt-3.5-turbo", "gpt-4", "gemini-pro", "gpt-4-turbo", "pi", "claude-v2", "airoboros-70b"]
 
         # Sidebar (left side) - New chat button
         if st.sidebar.button("New Chat"):
@@ -69,17 +70,16 @@ def main():
         st.sidebar.write("Chat History")
         c.execute("SELECT DISTINCT conversation_id FROM chat_history")
         conversations = c.fetchall()
-        for conv_id in conversations:
+        for conv_id in reversed(conversations):
             c.execute("SELECT content FROM chat_history WHERE conversation_id=? AND role='bot' LIMIT 1", (conv_id[0],))
             first_bot_response = c.fetchone()
             if first_bot_response:
-                if st.sidebar.button(f"{' '.join(first_bot_response[0].split()[:5])}",
-                                     key=f"conversation_{conv_id[0]}"):
+                if st.sidebar.button(f"{' '.join(first_bot_response[0].split()[0:5])}"):
                     display_conversation(conv_id[0])
 
         # Model selection dropdown
         st.sidebar.markdown("---")
-        # selected_model = st.sidebar.write(models, index=0)
+        # selected_model = st.sidebar.selectbox("Select Model", models, index=0)
 
         # Clear Chat History button
         if st.sidebar.button("Clear Chat History"):
@@ -121,7 +121,7 @@ def main():
 def display_conversation(conversation_id):
     c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
     chats = c.fetchall()
-    st.markdown(f"### Conversation {conversation_id}")
+    st.markdown(f"### Conversation")
     for chat in chats:
         st.markdown(f"{chat[1]}")
         st.markdown(f"{chat[2]}")
