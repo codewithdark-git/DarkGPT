@@ -1,0 +1,16 @@
+Metadata-Version: 2.1
+Name: streamlit-icon-component
+Version: 0.0.2
+Summary: UNKNOWN
+Home-page: 
+Author: 
+Author-email: 
+License: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.6
+Description-Content-Type: text/plain
+License-File: LICENSE
+Requires-Dist: streamlit (>=0.63)
+
+UNKNOWN
+
