@@ -62,9 +62,10 @@ def main():
             "GPT-4 Turbo": "gpt-4-turbo"
         }
 
-        selected_model_display_name = st.selectbox("DarkGPT", list(models.keys()), index=0)
+        with st.header("DarkGPT"):
+            selected_model_display_name = st.selectbox("", list(models.keys()), index=0)
 
-        selected_model = models[selected_model_display_name]
+            selected_model = models[selected_model_display_name]
 
         # st.header("DarkGPT")
 
