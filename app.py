@@ -134,6 +134,7 @@
 import streamlit as st
 from g4f.client import Client
 import sqlite3
+from cookies import *
 from undetected_chromedriver import *
 
 # Create a connection to the database
