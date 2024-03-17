@@ -2,8 +2,19 @@ import streamlit as st
 from g4f.client import Client
 import sqlite3
 import clipboard
+import os
+import pandas as pd
+import win32clipboard
 from cookies import *
 from undetected_chromedriver import *
+
+# Open the clipboard and get data
+win32clipboard.OpenClipboard()
+data = win32clipboard.GetClipboardData()
+win32clipboard.CloseClipboard()
+
+# Disable pyperclip fallback
+os.environ["PYPERCLIP_FALLBACK"] = "disabled"
 
 # Create a connection to the database
 conn = sqlite3.connect('chat_history.db')
@@ -16,7 +27,6 @@ try:
     conn.commit()
 except Exception as e:
     st.error(f"An error occurred: {e}")
-
 
 # Streamlit app
 def main():
@@ -38,7 +48,6 @@ def main():
             font-width: ;
             cursor: pointer;
             # box-sizing: border-box
-
         }
         .stButton>button:hover {
             background-color: #000000 !important;
@@ -67,7 +76,7 @@ def main():
             st.header("DarkGPT")
 
         with columns[2]:
-            selected_model_display_name = st.selectbox("", list(models.keys()), index=0)
+            selected_model_display_name = st.selectbox("Select Model", list(models.keys()), index=0)
 
         with columns[1]:
             selected_model = models[selected_model_display_name]
@@ -133,7 +142,6 @@ def main():
                     if st.button('Copy', key=button_key_copy):
                         clipboard.copy(chat["content"])
 
-
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
@@ -147,12 +155,12 @@ def main():
         st.error("Check Your Internet Connection:")
 
 def display_conversation(conversation_id):
-        c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
-        chats = c.fetchall()
-        st.markdown(f"### Conversation")
-        for chat in chats:
-            st.markdown(f"{chat[1]}")
-            st.markdown(f"{chat[2]}")
+    c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
+    chats = c.fetchall()
+    st.markdown(f"### Conversation")
+    for chat in chats:
+        st.markdown(f"{chat[1]}")
+        st.markdown(f"{chat[2]}")
 
 if __name__ == "__main__":
     main()
