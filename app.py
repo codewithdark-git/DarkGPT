@@ -132,7 +132,7 @@ def main():
                     button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
                     if st.button('Copy', key=button_key_copy):
                         pyperclip.copy(chat["content"])
-                    
+
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
