@@ -139,8 +139,10 @@ def main():
                     st.markdown(chat["content"])
                     button_key_copy = f"text_copy_{index}"  # Unique key for each copy button
                     button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
-                    if st.button('Copy', key=button_key_copy):
+                    if st.button('📋 Copy', key=button_key_copy):
                         clipboard.copy(chat["content"])
+                        st.session_state.chat_history.append({"role": "bot", "content": bot_response})
+
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
