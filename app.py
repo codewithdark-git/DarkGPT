@@ -2,6 +2,10 @@ import streamlit as st
 from g4f.client import Client
 import sqlite3
 import pyperclip
+import os
+
+# Configure Pyperclip to use a dummy mechanism
+os.environ["PYPERCLIP_FALLBACK"] = "dummy"
 from cookies import *
 from undetected_chromedriver import *
 
