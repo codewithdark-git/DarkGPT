@@ -1,7 +1,8 @@
 import streamlit as st
 from g4f.client import Client
 import sqlite3
-import pyperclip
+# import pyperclip
+import clipboard
 import os
 
 # Configure Pyperclip to use a dummy mechanism
@@ -135,7 +136,7 @@ def main():
                     button_key_copy = f"text_copy_{index}"  # Unique key for each copy button
                     button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
                     if st.button('Copy', key=button_key_copy):
-                        pyperclip.copy(chat["content"])
+                        clipboard.copy(chat["content"])
 
 
     except Exception as e:
