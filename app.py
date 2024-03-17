@@ -1,7 +1,7 @@
-
 import streamlit as st
 from g4f.client import Client
 import sqlite3
+import pyperclip
 from cookies import *
 from undetected_chromedriver import *
 
@@ -62,17 +62,18 @@ def main():
             "GPT-4 Turbo": "gpt-4-turbo"
         }
 
-        with st.header("DarkGPT"):
+        columns = st.columns(3)  # Split the layout into three columns
+        with columns[0]:
+            st.header("DarkGPT")
+
+        with columns[2]:
             selected_model_display_name = st.selectbox("", list(models.keys()), index=0)
 
+        with columns[1]:
             selected_model = models[selected_model_display_name]
 
-        # st.header("DarkGPT")
-
-        # Define models
-
         # Sidebar (left side) - New chat button
-        if st.sidebar.button("New Chat"):
+        if st.sidebar.button("New Chat", key="new_chat_button"):
             st.session_state.chat_history.clear()
             st.session_state.conversation_id += 1
 
@@ -81,26 +82,14 @@ def main():
         c.execute("SELECT DISTINCT conversation_id FROM chat_history")
         conversations = c.fetchall()
         for conv_id in reversed(conversations):
-            c.execute("SELECT content FROM chat_history WHERE conversation_id=? AND role='bot' LIMIT 1", (conv_id[0],))
+            c.execute("SELECT content FROM chat_history WHERE conversation_id=? AND role='bot' LIMIT 1",
+                      (conv_id[0],))
             first_bot_response = c.fetchone()
             if first_bot_response:
-                if st.sidebar.button(f"{' '.join(first_bot_response[0].split()[0:5])}"):
+                if st.sidebar.button(" ".join(first_bot_response[0].split()[0:5])):
                     display_conversation(conv_id[0])
 
-        # Model selection dropdown
-        st.sidebar.markdown("---")
-
-        # Define display names for models
-
-        # print(models.keys())
-        # print(models.values())
-
-        # Create the select box
-
-
-
-
-        # Clear Chat History button
+        # Sidebar (left side) - Clear Chat History button
         if st.sidebar.button("Clear Chat History"):
             st.session_state.chat_history.clear()
             c.execute("DELETE FROM chat_history")
@@ -110,7 +99,7 @@ def main():
         st.markdown("---")
         if selected_model == "gpt-4-turbo":
             with st.chat_message("bot"):
-                st.write("Working with this model used the default model for generation.")
+                st.markdown("Working with this model used the default model for generation.")
 
         user_input = st.chat_input("Ask Anything ...")
 
@@ -133,23 +122,37 @@ def main():
             conn.commit()
 
         # Display chat history
-        for chat in st.session_state.chat_history:
+        for index, chat in enumerate(st.session_state.chat_history):
             with st.chat_message(chat["role"]):
-                st.markdown(chat["content"])
+                if chat["role"] == "user":
+                    st.markdown(chat["content"])
+                elif chat["role"] == "bot":
+                    st.markdown(chat["content"])
+                    button_key_copy = f"text_copy_{index}"  # Unique key for each copy button
+                    button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
+                    if st.button('Copy', key=button_key_copy):
+                        pyperclip.copy(chat["content"])
+
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
+    except TimeoutError:
+        st.error("Check Your Internet Connection:")
+
+    except ConnectionError:
+        st.error("Check Your Internet Connection:")
+
+    except RuntimeError:
+        st.error("Check Your Internet Connection:")
 
 def display_conversation(conversation_id):
-    c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
-    chats = c.fetchall()
-    st.markdown(f"### Conversation")
-    for chat in chats:
-        st.markdown(f"{chat[1]}")
-        st.markdown(f"{chat[2]}")
-
+        c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
+        chats = c.fetchall()
+        st.markdown(f"### Conversation")
+        for chat in chats:
+            st.markdown(f"{chat[1]}")
+            st.markdown(f"{chat[2]}")
 
 if __name__ == "__main__":
-    main()
-
+        main()
