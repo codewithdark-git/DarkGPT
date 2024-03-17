@@ -155,4 +155,4 @@ def display_conversation(conversation_id):
             st.markdown(f"{chat[2]}")
 
 if __name__ == "__main__":
-        main()
+    main()
