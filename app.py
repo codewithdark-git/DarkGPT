@@ -137,6 +137,15 @@ def main():
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
+    except TimeoutError:
+        st.error("Check Your Internet Connection:")
+
+    except ConnectionError:
+        st.error("Check Your Internet Connection:")
+
+    except RuntimeError:
+        st.error("Check Your Internet Connection:")
+
 def display_conversation(conversation_id):
         c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
         chats = c.fetchall()
