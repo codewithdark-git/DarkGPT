@@ -3,15 +3,13 @@ from g4f.client import Client
 import sqlite3
 import clipboard
 import os
-import pandas as pd
-import win32clipboard
 from cookies import *
 from undetected_chromedriver import *
 
 # Open the clipboard and get data
-win32clipboard.OpenClipboard()
-data = win32clipboard.GetClipboardData()
-win32clipboard.CloseClipboard()
+# win32clipboard.OpenClipboard()
+# data = win32clipboard.GetClipboardData()
+# win32clipboard.CloseClipboard()
 
 # Disable pyperclip fallback
 os.environ["PYPERCLIP_FALLBACK"] = "disabled"
@@ -141,7 +139,7 @@ def main():
                     button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
                     if st.button('📋 Copy', key=button_key_copy):
                         clipboard.copy(chat["content"])
-                        st.session_state.chat_history.append({"role": "bot", "content": bot_response})
+
 
 
     except Exception as e:
