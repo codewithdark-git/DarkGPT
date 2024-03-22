@@ -1,1 +1,0 @@
-ace.require(["ace/snippets/perl6"],(function(e){"object"==typeof module&&"object"==typeof exports&&module&&(module.exports=e)}));
