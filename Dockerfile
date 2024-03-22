@@ -13,5 +13,8 @@ RUN pip install --no-cache-dir requirements.txt
 # Expose the port that Streamlit runs on
 EXPOSE 8501
 
+# Define environment variable
+ENV NAME DarkGPT
+
 # Set the entry point to run the Streamlit application
 CMD ["streamlit", "run", "app.py"]
