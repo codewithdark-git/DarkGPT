@@ -1,7 +1,7 @@
 import streamlit as st
 from g4f.client import Client
 import sqlite3
-import clipboard
+# import clipboard
 import os
 from cookies import *
 from undetected_chromedriver import *
@@ -135,10 +135,10 @@ def main():
                     st.markdown(chat["content"])
                 elif chat["role"] == "bot":
                     st.markdown(chat["content"])
-                    button_key_copy = f"text_copy_{index}"  # Unique key for each copy button
-                    button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
-                    if st.button('📋 Copy', key=button_key_copy):
-                        clipboard.copy(chat["content"])
+                    # button_key_copy = f"text_copy_{index}"  # Unique key for each copy button
+                    # button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
+                    # if st.button('📋 Copy', key=button_key_copy):
+                    #     clipboard.copy(chat["content"])
 
 
 
