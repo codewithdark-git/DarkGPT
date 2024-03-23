@@ -1,18 +1,17 @@
 import streamlit as st
 from g4f.client import Client
 import sqlite3
-# import clipboard
+import subprocess
+import pyttsx3
 import os
 from cookies import *
 from undetected_chromedriver import *
 
-# Open the clipboard and get data
-# win32clipboard.OpenClipboard()
-# data = win32clipboard.GetClipboardData()
-# win32clipboard.CloseClipboard()
+def local_css(file_name):
+    with open(file_name) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
-# Disable pyperclip fallback
-os.environ["PYPERCLIP_FALLBACK"] = "disabled"
+local_css("style.css")
 
 # Create a connection to the database
 conn = sqlite3.connect('chat_history.db')
@@ -26,36 +25,27 @@ try:
 except Exception as e:
     st.error(f"An error occurred: {e}")
 
+
+def copy(text):
+    """
+    Copy text to clipboard on Windows.
+
+    Parameters:
+    text (str): The text to copy to the clipboard.
+
+    Returns:
+    bool: True if the text was successfully copied, False otherwise.
+    """
+    try:
+        subprocess.run(['clip'], input=text.strip().encode('utf-16'), check=True)
+        return True
+    except subprocess.CalledProcessError:
+        print("Error: Unable to copy text to clipboard on Windows.")
+        return False
+
+
 # Streamlit app
 def main():
-    # Apply custom CSS styles
-    st.write(
-        """
-        <style>
-        .stButton>button {
-            position: relative;
-            max-height: 30px;
-            min-width: 250px;
-            padding: auto;
-            margin: -3px -3px;
-            border: none;
-            border-radius: 10px ;
-            # background-color: #4CAF50 ;
-            color: white ;
-            font-size: 5px;
-            font-width: ;
-            cursor: pointer;
-            # box-sizing: border-box
-        }
-        .stButton>button:hover {
-            background-color: #000000 !important;
-            color: #00CED1;
-            # border: none;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
 
     try:
         if "chat_history" not in st.session_state:
@@ -65,8 +55,8 @@ def main():
             st.session_state.conversation_id = 1
 
         models = {
-            "Airoboros 70B": "airoboros-70b",
-            "GPT-4 Turbo": "gpt-4-turbo"
+            "🚀Airoboros 70B": "airoboros-70b",
+            "⚡GPT-4 Turbo": "gpt-4-turbo"
         }
 
         columns = st.columns(3)  # Split the layout into three columns
@@ -80,7 +70,7 @@ def main():
             selected_model = models[selected_model_display_name]
 
         # Sidebar (left side) - New chat button
-        if st.sidebar.button("New Chat", key="new_chat_button"):
+        if st.sidebar.button("✨New Chat", key="new_chat_button"):
             st.session_state.chat_history.clear()
             st.session_state.conversation_id += 1
 
@@ -97,7 +87,7 @@ def main():
                     display_conversation(conv_id[0])
 
         # Sidebar (left side) - Clear Chat History button
-        if st.sidebar.button("Clear Chat History"):
+        if st.sidebar.button("Clear Chat History ✖️"):
             st.session_state.chat_history.clear()
             c.execute("DELETE FROM chat_history")
             conn.commit()
@@ -135,10 +125,20 @@ def main():
                     st.markdown(chat["content"])
                 elif chat["role"] == "bot":
                     st.markdown(chat["content"])
-                    # button_key_copy = f"text_copy_{index}"  # Unique key for each copy button
-                    # button_key_regenerate = f"text_regenerate_{index}"  # Unique key for each regenerate button
-                    # if st.button('📋 Copy', key=button_key_copy):
-                    #     clipboard.copy(chat["content"])
+                    col1 = st.columns(10)
+                    with col1[0]:
+                        copy_button = f"text_copy_{index}"
+                        if st.button('📋', key=copy_button):
+                            copy(chat["content"])  # Assuming chat["content"] contains the text to copy
+
+                    # Add a speak button in the second column
+                    with col1[1]:
+                        speak_button = f"text_regenerate_{index}"
+                        if st.button('🔊', key=speak_button):
+                            engine = pyttsx3.init()
+                            engine.say(chat["content"])
+                            engine.runAndWait()
+
 
 
 
