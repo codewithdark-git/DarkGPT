@@ -26,22 +26,22 @@ except Exception as e:
     st.error(f"An error occurred: {e}")
 
 
-def copy(text):
-    """
-    Copy text to clipboard on Windows.
+# def copy(text):
+#     """
+#     Copy text to clipboard on Windows.
 
-    Parameters:
-    text (str): The text to copy to the clipboard.
+#     Parameters:
+#     text (str): The text to copy to the clipboard.
 
-    Returns:
-    bool: True if the text was successfully copied, False otherwise.
-    """
-    try:
-        subprocess.run(['clip'], input=text.strip().encode('utf-16'), check=True)
-        return True
-    except subprocess.CalledProcessError:
-        print("Error: Unable to copy text to clipboard on Windows.")
-        return False
+#     Returns:
+#     bool: True if the text was successfully copied, False otherwise.
+#     """
+#     try:
+#         subprocess.run(['clip'], input=text.strip().encode('utf-16'), check=True)
+#         return True
+#     except subprocess.CalledProcessError:
+#         st.error("Error: Unable to copy text to clipboard on Windows.")
+#         return False
 
 
 # Streamlit app
@@ -125,19 +125,19 @@ def main():
                     st.markdown(chat["content"])
                 elif chat["role"] == "bot":
                     st.markdown(chat["content"])
-                    col1 = st.columns(10)
-                    with col1[0]:
-                        copy_button = f"text_copy_{index}"
-                        if st.button('📋', key=copy_button):
-                            copy(chat["content"])  # Assuming chat["content"] contains the text to copy
+                    # col1 = st.columns(10)
+                    # with col1[0]:
+                    #     copy_button = f"text_copy_{index}"
+                    #     if st.button('📋', key=copy_button):
+                    #         copy(chat["content"])  # Assuming chat["content"] contains the text to copy
 
-                    # Add a speak button in the second column
-                    with col1[1]:
-                        speak_button = f"text_regenerate_{index}"
-                        if st.button('🔊', key=speak_button):
-                            engine = pyttsx3.init()
-                            engine.say(chat["content"])
-                            engine.runAndWait()
+                    # # Add a speak button in the second column
+                    # with col1[1]:
+                    #     speak_button = f"text_regenerate_{index}"
+                    #     if st.button('🔊', key=speak_button):
+                    #         engine = pyttsx3.init()
+                    #         engine.say(chat["content"])
+                    #         engine.runAndWait()
 
 
 
