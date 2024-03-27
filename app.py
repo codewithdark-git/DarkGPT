@@ -29,10 +29,10 @@ except Exception as e:
 # def copy(text):
 #     """
 #     Copy text to clipboard on Windows.
-
+#
 #     Parameters:
 #     text (str): The text to copy to the clipboard.
-
+#
 #     Returns:
 #     bool: True if the text was successfully copied, False otherwise.
 #     """
@@ -125,12 +125,12 @@ def main():
                     st.markdown(chat["content"])
                 elif chat["role"] == "bot":
                     st.markdown(chat["content"])
-                    # col1 = st.columns(10)
+                    col1 = st.columns(10)
                     # with col1[0]:
                     #     copy_button = f"text_copy_{index}"
                     #     if st.button('📋', key=copy_button):
                     #         copy(chat["content"])  # Assuming chat["content"] contains the text to copy
-
+                    #
                     # # Add a speak button in the second column
                     # with col1[1]:
                     #     speak_button = f"text_regenerate_{index}"
