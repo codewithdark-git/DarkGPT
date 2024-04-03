@@ -1,11 +1,9 @@
 import streamlit as st
 from g4f.client import Client
 import sqlite3
-import subprocess
+import google.generativeai as genai
 import pyttsx3
-import os
-from cookies import *
-from undetected_chromedriver import *
+import pyperclip
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -25,28 +23,8 @@ try:
 except Exception as e:
     st.error(f"An error occurred: {e}")
 
-
-# def copy(text):
-#     """
-#     Copy text to clipboard on Windows.
-#
-#     Parameters:
-#     text (str): The text to copy to the clipboard.
-#
-#     Returns:
-#     bool: True if the text was successfully copied, False otherwise.
-#     """
-#     try:
-#         subprocess.run(['clip'], input=text.strip().encode('utf-16'), check=True)
-#         return True
-#     except subprocess.CalledProcessError:
-#         st.error("Error: Unable to copy text to clipboard on Windows.")
-#         return False
-
-
 # Streamlit app
 def main():
-
     try:
         if "chat_history" not in st.session_state:
             st.session_state.chat_history = []
@@ -55,8 +33,9 @@ def main():
             st.session_state.conversation_id = 1
 
         models = {
-            "🚀Airoboros 70B": "airoboros-70b",
-            "⚡GPT-4 Turbo": "gpt-4-turbo"
+            "🚀 Airoboros 70B": "airoboros-70b",
+            "🔮 Gemini Pro": "gemini-pro",
+            "⚡ GPT-4 Turbo": "gpt-4-turbo"
         }
 
         columns = st.columns(3)  # Split the layout into three columns
@@ -70,7 +49,7 @@ def main():
             selected_model = models[selected_model_display_name]
 
         # Sidebar (left side) - New chat button
-        if st.sidebar.button("✨New Chat", key="new_chat_button"):
+        if st.sidebar.button("✨ New Chat", key="new_chat_button"):
             st.session_state.chat_history.clear()
             st.session_state.conversation_id += 1
 
@@ -94,65 +73,74 @@ def main():
 
         # Main content area (center)
         st.markdown("---")
-        if selected_model == "gpt-4-turbo":
-            with st.chat_message("bot"):
-                st.markdown("Working with this model used the default model for generation.")
 
         user_input = st.chat_input("Ask Anything ...")
 
-        # Listen for changes in user input and generate completion
-        if user_input:
-            client = Client()
-            response = client.chat.completions.create(
-                model=selected_model,
-                messages=[{"role": "user", "content": user_input}],
-            )
-            bot_response = response.choices[0].message.content
+        if st.button("Ask"):
+            if selected_model == "gemini-pro":
+                try:
+                    GOOGLE_API_KEY = "AIzaSyC8_gwU5LSVQJk3iIXyj5xJ94ArNK11dXU"
+                    genai.configure(api_key=GOOGLE_API_KEY)
+                    model = genai.GenerativeModel('gemini-pro')
+                    prompt = user_input
+                    response = model.generate_content(prompt)
+                    bot_response = response.candidates[0].content.parts[0].text
 
-            st.session_state.chat_history.append({"role": "user", "content": user_input})
-            st.session_state.chat_history.append({"role": "bot", "content": bot_response})
+                    st.session_state.chat_history.append({"role": "user", "content": user_input})
+                    st.session_state.chat_history.append({"role": "bot", "content": bot_response})
 
-            # Store chat in the database
-            for chat in st.session_state.chat_history:
-                c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
-                          (st.session_state.conversation_id, chat["role"], chat["content"]))
-            conn.commit()
+                    # Store chat in the database
+                    for chat in st.session_state.chat_history:
+                        c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
+                                  (st.session_state.conversation_id, chat["role"], chat["content"]))
+                    conn.commit()
 
-        # Display chat history
-        for index, chat in enumerate(st.session_state.chat_history):
-            with st.chat_message(chat["role"]):
-                if chat["role"] == "user":
-                    st.markdown(chat["content"])
-                elif chat["role"] == "bot":
-                    st.markdown(chat["content"])
-                    col1 = st.columns(10)
-                    # with col1[0]:
-                    #     copy_button = f"text_copy_{index}"
-                    #     if st.button('📋', key=copy_button):
-                    #         copy(chat["content"])  # Assuming chat["content"] contains the text to copy
-                    #
-                    # # Add a speak button in the second column
-                    # with col1[1]:
-                    #     speak_button = f"text_regenerate_{index}"
-                    #     if st.button('🔊', key=speak_button):
-                    #         engine = pyttsx3.init()
-                    #         engine.say(chat["content"])
-                    #         engine.runAndWait()
+                    for index, chat in enumerate(st.session_state.chat_history):
+                        with st.chat_message(chat["role"]):
+                            if chat["role"] == "user":
+                                st.markdown(chat["content"])
+                            elif chat["role"] == "bot":
+                                st.markdown(chat["content"])
 
+
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
+            elif selected_model == "gpt-4-turbo":
+                st.write("Please use the default model for text generation.")
+            else:
+                try:
+                    client = Client()
+                    response = client.chat.completions.create(
+                        model=models[selected_model_display_name],
+                        messages=[{"role": "user", "content": user_input}],
+                    )
+                    bot_response = response.choices[0].message.content
+
+                    st.session_state.chat_history.append({"role": "user", "content": user_input})
+                    st.session_state.chat_history.append({"role": "bot", "content": bot_response})
+
+                    # Store chat in the database
+                    for chat in st.session_state.chat_history:
+                        c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
+                                  (st.session_state.conversation_id, chat["role"], chat["content"]))
+                    conn.commit()
+
+                    # Display chat history
+                    for index, chat in enumerate(st.session_state.chat_history):
+                        with st.chat_message(chat["role"]):
+                            if chat["role"] == "user":
+                                st.markdown(chat["content"])
+                            elif chat["role"] == "bot":
+                                st.markdown(chat["content"])
+
+
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
 
 
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
-
-    except TimeoutError:
-        st.error("Check Your Internet Connection:")
-
-    except ConnectionError:
-        st.error("Check Your Internet Connection:")
-
-    except RuntimeError:
-        st.error("Check Your Internet Connection:")
 
 def display_conversation(conversation_id):
     c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
