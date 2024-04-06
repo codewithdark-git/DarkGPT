@@ -2,13 +2,15 @@ import streamlit as st
 from g4f.client import Client
 import sqlite3
 import google.generativeai as genai
-from diffusers import DiffusionPipeline
-import matplotlib.pyplot as plt
-import torch
-
-
 # import pyttsx3
 # import pyperclip
+import requests
+import cv2
+import numpy as np
+
+
+API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
+headers = {"Authorization": "Bearer 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"}
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -29,22 +31,14 @@ try:
 except Exception as e:
     st.error(f"An error occurred: {e}")
 
-
-def generate_image(pipe, prompt, params):
-    img = pipe(prompt, **params).images
-
-    num_images = len(img)
-    if num_images > 1:
-        fig, ax = plt.subplots(nrows=1, ncols=num_images)
-        for i in range(num_images):
-            ax[i].imshow(img[i]);
-            ax[i].axis('off');
-
-    else:
-        fig = plt.figure()
-        plt.imshow(img[0]);
-        plt.axis('off');
-    plt.tight_layout()
+def generate_image_from_model(prompt):
+    response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
+    image_bytes = response.content
+    # Convert image bytes to a NumPy array
+    nparr = np.frombuffer(image_bytes, np.uint8)
+    # Decode the image array
+    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return image
 
 
 # Streamlit app
@@ -104,7 +98,7 @@ def main():
         if user_input:
             if selected_model == "gemini-pro":
                 try:
-                    GOOGLE_API_KEY = "Gemini"
+                    GOOGLE_API_KEY = "AIzaSyC8_gwU5LSVQJk3iIXyj5xJ94ArNK11dXU"
                     genai.configure(api_key=GOOGLE_API_KEY)
                     model = genai.GenerativeModel('gemini-pro')
                     prompt = user_input
@@ -132,13 +126,10 @@ def main():
                     st.error(f"An error occurred: {e}")
 
             elif selected_model == "stabilityai/stable-diffusion-xl-base-1.0":
-                pipe = DiffusionPipeline.from_pretrained("stabilityai/stable-diffusion-xl-base-1.0",
-                                                         torch_dtype=torch.float32, use_safetensors=True,
-                                                         variant="fp16")
-                pipe.to("cpu")
+                prompt = user_input
+                generated_image = generate_image_from_model(prompt)
+                st.image(generated_image, caption="Generated Image", width=400)
 
-                params = {'num_inference_steps': 100, 'num_images_per_prompt': 2}
-                generate_image(pipe, user_input, params)
 
             else:
                 try:
