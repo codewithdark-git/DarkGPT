@@ -51,8 +51,7 @@ def main():
         models = {
             "🚀 Airoboros 70B": "airoboros-70b",
             "🔮 Gemini Pro": "gemini-pro",
-            "📷 StabilityAI": "stabilityai/stable-diffusion-xl-base-1.0",
-            "🧨 GPT-3-turbo": g4f.models.default
+            "📷 StabilityAI": "stabilityai/stable-diffusion-xl-base-1.0"
         }
 
         columns = st.columns(3)  # Split the layout into three columns
@@ -129,32 +128,6 @@ def main():
                 prompt = user_input
                 generated_image = generate_image_from_model(prompt)
                 st.image(generated_image, caption="Generated Image", width=400)
-
-            elif selected_model == "GPT-3-turbo":
-                try:
-
-                    client = Client()
-                    response = client.chat.completions.create(
-                        messages=[{"role": "user", "content": user_input}],
-                        model=g4f.models.default,
-                    )
-
-                    # Extract the GPT response and print it
-                    bot_response = response.choices[0].message.content
-
-                    st.session_state.chat_history.append({"role": "user", "content": user_input})
-                    st.session_state.chat_history.append({"role": "bot", "content": bot_response})
-
-                    for index, chat in enumerate(st.session_state.chat_history):
-                        with st.chat_message(chat["role"]):
-                            if chat["role"] == "user":
-                                st.markdown(chat["content"])
-                            elif chat["role"] == "bot":
-                                st.markdown(chat["content"])
-
-
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
 
             else:
                 try:
