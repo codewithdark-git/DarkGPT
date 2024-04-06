@@ -1,56 +1,54 @@
-# GPT Chat Explorer
+# Streamlit Chat Application
 
-GPT Chat Explorer is an interactive web application that allows users to engage in conversations with various GPT (Generative Pre-trained Transformer) models in real-time. This repository contains the source code for the application.
+This is a simple chat application built using Streamlit and various AI models for text generation. It allows users to interact with different AI models to generate responses to their queries.
 
 ## Features
 
-- **Real-time Conversations:** Engage in natural conversations with GPT models and explore their responses in real-time.
-- **Chat History:** Review and manage chat history organized by conversation ID for easy reference.
-- **Model Selection:** Choose from a selection of GPT models, including GPT-3.5 Turbo, GPT-4, and more.
-- **Custom Styling:** Customize the appearance of the app with custom CSS styles to suit your preferences.
-- **Clear Chat History:** Easily clear chat history with a single click to start fresh.
-- **Interactive Sidebar:** Access key functionalities such as starting a new chat and clearing chat history conveniently from the sidebar.
-- **Error Handling:** Robust error handling ensures smooth operation and provides feedback in case of any issues.
-- **Timestamped Conversations:** View conversation history with timestamps for each message, providing context and chronological order.
-- **Responsive Design:** Enjoy a seamless experience across devices with responsive design elements.
+- **Multiple AI Models**: Choose from a variety of AI models to generate responses, including Airoboros 70B, Gemini Pro, and more.
+- **Chat History**: View and manage chat history directly within the app.
+- **Dynamic Model Selection**: Select different models dynamically based on user input.
+- **User-Friendly Interface**: Clean and intuitive interface for easy interaction.
 
-## Getting Started
+## Installation
 
-To get started with the GPT Chat Explorer, follow these steps:
+1. Clone the repository:
 
-1. **Clone the Repository:**
-   ```
-   git clone https://github.com/codewithdark-git/DarkGPT-Chatbot.git
-   ```
+```bash
+git clone https://github.com/codewithdark-git/DarkGPT.git
+```
 
-2. **Install Dependencies:**
-   ```
-   pip install -r requirements.txt
-   ```
+2. Install dependencies:
 
-3. **Run the Application:**
-   ```
-   streamlit run app.py
-   ```
+```bash
+cd streamlit-chat-app
+pip install -r requirements.txt
+```
 
-4. **Start Chatting:**
-   Open the application in your web browser and start chatting with GPT models!
+## Usage
+
+Run the Streamlit app using the following command:
+
+```bash
+streamlit run app.py
+```
+
+Once the app is running, you can access it via your web browser at [http://localhost:8501](http://localhost:8501).
+
+## Configuration
+
+Before running the app, make sure to configure the necessary API keys for Google and other services used in the app. You can do this by modifying the `config.py` file.
 
 ## Contributing
 
-Contributions are welcome! If you'd like to contribute to the project, please follow these steps:
+Contributions are welcome! If you'd like to contribute to this project, please follow these steps:
 
 1. Fork the repository.
-2. Create a new branch (`git checkout -b feature/new-feature`).
-3. Make your changes and commit them (`git commit -am 'Add new feature'`).
-4. Push to the branch (`git push origin feature/new-feature`).
-5. Create a new Pull Request.
+2. Create a new branch (`git checkout -b feature/my-feature`).
+3. Make your changes.
+4. Commit your changes (`git commit -am 'Add new feature'`).
+5. Push to the branch (`git push origin feature/my-feature`).
+6. Create a new pull request.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](../Chatbot/LICENSE) file for details.
-
-## Acknowledgements
-
-- This project was inspired by the capabilities of GPT models and the desire to create an interactive chat exploration tool.
-- Special thanks to the Streamlit team for providing a powerful framework for building interactive web applications.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
