@@ -32,17 +32,6 @@ try:
 except Exception as e:
     st.error(f"An error occurred: {e}")
 
-def generate_image_from_model(prompt):
-    response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
-    image_bytes = response.content
-    image = Image.open(io.BytesIO(image_bytes))
-    return image
-
-def generate_image(prompt):
-    response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
-    image_bytes = response.content
-    image = Image.open(io.BytesIO(image_bytes))
-    return image
 
 # Streamlit app
 def main():
@@ -55,8 +44,11 @@ def main():
 
         models = {
             "🚀 Airoboros 70B": "airoboros-70b",
+            "👑 Gemini 1.0": "gemini-1.0-pro",
+            "🧨 Gemini 1.0 Pro ": "gemini-1.0-pro-001",
+            "⚡ Gemini 1.0 pro latest": "gemini-1.0-pro-latest",
             "🔮 Gemini Pro": "gemini-pro",
-            "📷 StabilityAI": "stabilityai/stable-diffusion-xl-base-1.0"
+            "🎉 Gemini pro vision": "gemini-pro-vision"
         }
 
         columns = st.columns(3)  # Split the layout into three columns
@@ -98,71 +90,7 @@ def main():
         user_input = st.chat_input("Ask Anything ...")
 
         if user_input:
-            if selected_model == "gemini-pro":
-                try:
-
-                    if user_input.startswith("/image"):
-                        prompt = user_input[len("/image"):].strip()  # Extract prompt after "/image"
-
-                        # Use Gemini Pro to generate content based on the prompt
-                        GOOGLE_API_KEY = "AIzaSyC8_gwU5LSVQJk3iIXyj5xJ94ArNK11dXU"
-                        genai.configure(api_key=GOOGLE_API_KEY)
-                        model = genai.GenerativeModel('gemini-1.0-pro')
-                        response = model.generate_content(prompt)
-                        bot_response = response.candidates[0].content.parts[0].text
-
-                        # Generate image based on the generated text prompt
-                        generated_image = generate_image(bot_response)
-
-                        st.session_state.chat_history.append({"role": "user", "content": user_input})
-                        st.session_state.chat_history.append({"role": "bot", "content": generated_image})
-
-                        # Display the generated image
-                        for index, chat in enumerate(st.session_state.chat_history):
-                            with st.chat_message(chat["role"]):
-                                if chat["role"] == "user":
-                                    st.markdown(user_input)
-                                elif chat["role"] == "bot":
-                                    st.image(generated_image, width=400)
-
-                    else:
-                        GOOGLE_API_KEY = "AIzaSyC8_gwU5LSVQJk3iIXyj5xJ94ArNK11dXU"
-                        genai.configure(api_key=GOOGLE_API_KEY)
-                        model = genai.GenerativeModel('gemini-1.0-pro')
-                        prompt = user_input
-                        response = model.generate_content(prompt)
-                        bot_response = response.candidates[0].content.parts[0].text
-
-                        st.session_state.chat_history.append({"role": "user", "content": user_input})
-                        st.session_state.chat_history.append({"role": "bot", "content": bot_response})
-
-                        # Store chat in the database
-                        for chat in st.session_state.chat_history:
-                            c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
-                                      (st.session_state.conversation_id, chat["role"], chat["content"]))
-                        conn.commit()
-
-                        for index, chat in enumerate(st.session_state.chat_history):
-                            with st.chat_message(chat["role"]):
-                                if chat["role"] == "user":
-                                    st.markdown(chat["content"])
-                                elif chat["role"] == "bot":
-                                    st.markdown(chat["content"])
-
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
-
-            elif selected_model == "stabilityai/stable-diffusion-xl-base-1.0":
-                prompt = user_input
-                generated_image = generate_image_from_model(prompt)
-                for index, chat in enumerate(st.session_state.chat_history):
-                    with st.chat_message(chat["role"]):
-                        if chat["role"] == "user":
-                            st.markdown(user_input)
-                        elif chat["role"] == "bot":
-                            st.image(generated_image, width=400)
-
-            else:
+            if selected_model == "airoboros-70b":
                 try:
                     client = Client()
                     response = client.chat.completions.create(
@@ -191,6 +119,36 @@ def main():
 
                 except Exception as e:
                     st.error(f"An error occurred: {e}")
+
+            else:
+                try:
+                        GOOGLE_API_KEY = "AIzaSyC8_gwU5LSVQJk3iIXyj5xJ94ArNK11dXU"
+                        genai.configure(api_key=GOOGLE_API_KEY)
+                        model = genai.GenerativeModel(selected_model)
+                        prompt = user_input
+                        response = model.generate_content(prompt)
+                        bot_response = response.candidates[0].content.parts[0].text
+
+                        st.session_state.chat_history.append({"role": "user", "content": user_input})
+                        st.session_state.chat_history.append({"role": "bot", "content": bot_response})
+
+                        # Store chat in the database
+                        for chat in st.session_state.chat_history:
+                            c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
+                                      (st.session_state.conversation_id, chat["role"], chat["content"]))
+                        conn.commit()
+
+                        for index, chat in enumerate(st.session_state.chat_history):
+                            with st.chat_message(chat["role"]):
+                                if chat["role"] == "user":
+                                    st.markdown(chat["content"])
+                                elif chat["role"] == "bot":
+                                    st.markdown(chat["content"])
+
+                except Exception as e:
+                    st.error(f"An error occurred: {e}")
+
+
 
 
 
