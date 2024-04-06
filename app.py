@@ -115,8 +115,9 @@ def main():
                     st.error(f"An error occurred: {e}")
 
             else:
-                try:
-                        GOOGLE_API_KEY = "AIzaSyC8_gwU5LSVQJk3iIXyj5xJ94ArNK11dXU"
+                try:    
+                        # GEMINI Replace with your Gemini Api key
+                        GOOGLE_API_KEY = "GEMINI"
                         genai.configure(api_key=GOOGLE_API_KEY)
                         model = genai.GenerativeModel(selected_model)
                         prompt = user_input
