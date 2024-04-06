@@ -118,7 +118,7 @@ def main():
                                 st.markdown(chat["content"])
                             elif chat["role"] == "bot":
                                 st.markdown(chat["content"])
-                                
+
 
 
 
