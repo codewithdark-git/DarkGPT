@@ -5,13 +5,7 @@ import sqlite3
 import google.generativeai as genai
 # import pyttsx3
 import pyperclip
-import requests
-from PIL import Image
-import io
 
-
-API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
-headers = {"Authorization": "Bearer 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"}
 
 def local_css(file_name):
     with open(file_name) as f:
