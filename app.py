@@ -4,10 +4,10 @@ from g4f.client import Client
 import sqlite3
 import google.generativeai as genai
 # import pyttsx3
-# import pyperclip
+import pyperclip
 import requests
-import cv2
-import numpy as np
+from PIL import Image
+import io
 
 
 API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
@@ -35,10 +35,7 @@ except Exception as e:
 def generate_image_from_model(prompt):
     response = requests.post(API_URL, headers=headers, json={"inputs": prompt})
     image_bytes = response.content
-    # Convert image bytes to a NumPy array
-    nparr = np.frombuffer(image_bytes, np.uint8)
-    # Decode the image array
-    image = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    image = Image.open(io.BytesIO(image_bytes))
     return image
 
 
@@ -121,6 +118,9 @@ def main():
                                 st.markdown(chat["content"])
                             elif chat["role"] == "bot":
                                 st.markdown(chat["content"])
+                                if st.button("📋"):
+                                    pyperclip.copy(chat["content"])
+
 
 
                 except Exception as e:
