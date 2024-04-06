@@ -20,7 +20,7 @@ git clone https://github.com/codewithdark-git/DarkGPT.git
 2. Install dependencies:
 
 ```bash
-cd streamlit-chat-app
+cd DarkGPT
 pip install -r requirements.txt
 ```
 
