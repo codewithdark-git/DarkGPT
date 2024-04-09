@@ -1,10 +1,16 @@
 import streamlit as st
-import g4f
 from g4f.client import Client
 import sqlite3
 import google.generativeai as genai
 # import pyttsx3
 import pyperclip
+
+
+st.set_page_config(page_title="DarkGPT",
+                   page_icon="🤖",
+                   layout="wide",
+                   initial_sidebar_state="expanded"
+)
 
 
 def local_css(file_name):
@@ -25,6 +31,7 @@ try:
     conn.commit()
 except Exception as e:
     st.error(f"An error occurred: {e}")
+
 
 
 # Streamlit app
@@ -50,10 +57,15 @@ def main():
             st.header("DarkGPT")
 
         with columns[2]:
+
             selected_model_display_name = st.selectbox("Select Model", list(models.keys()), index=0)
+            selected_model = models[selected_model_display_name]
 
         with columns[1]:
-            selected_model = models[selected_model_display_name]
+            pass
+            # if st.button("summarize"):
+            #     st.switch_page('pages/summarize.py')
+
 
         # Sidebar (left side) - New chat button
         if st.sidebar.button("✨ New Chat", key="new_chat_button"):
