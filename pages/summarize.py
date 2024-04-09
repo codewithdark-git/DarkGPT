@@ -71,8 +71,8 @@ def display_homepage():
         <p>Developed by DarkCoder</p>
         <p>
             <a href="https://github.com/codewithdark-git" target="_blank" style="text-decoration: none; color: #007bff; margin-right: 10px;">GitHub</a>
-            <a href="https://www.linkedin.com/in/codewithdark/" target="_blank" style="text-decoration: none; color: #007bff; margin-right: 10px;">Linkedin</a>
-            <a href="https://www.facebook.com/codewithdark.fb/" target="_blank" style="text-decoration: none; color: #007bff;">Facebook</a>
+            | <a href="https://www.linkedin.com/in/codewithdark/" target="_blank" style="text-decoration: none; color: #007bff; margin-right: 10px;">Linkedin</a>
+            | <a href="https://www.facebook.com/codewithdark.fb/" target="_blank" style="text-decoration: none; color: #007bff;">Facebook</a>
         </p>
     </footer>
     '''
