@@ -1,0 +1,35 @@
+[build-system]
+requires = ["python>=3.8"]
+build-backend = "poetry.masonry.api"
+
+[tool.poetry]
+name = "DarkGPT"
+version = "0.1.0"
+description = "AI-driven text processing application"
+authors = ["codewithdark90@gmail.com"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+streamlit = "^1.6.0"
+gensim = "^4.0.1"
+googletrans==4.0.0-rc1
+nltk = "^3.6.3"
+readtime = "^2.0.0"
+textstat = "^0.7.1"
+sumy = "^0.8.1"
+
+[tool.poetry.dev-dependencies]
+
+[tool.poetry.scripts]
+synthia = "DarkGPT:main"  # Replace 'synthia' with your main script name
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
