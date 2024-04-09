@@ -2,6 +2,9 @@
 
 This is a simple chat application built using Streamlit and various AI models for text generation. It allows users to interact with different AI models to generate responses to their queries.
 
+App on streamlit : 
+App on hugging Face with more Features : https://huggingface.co/spaces/codewithDark/DarkGPT 
+
 ## Features
 
 - **Multiple AI Models**: Choose from a variety of AI models to generate responses, including Airoboros 70B, Gemini Pro, and more.
