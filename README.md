@@ -2,10 +2,10 @@
 
 This is a simple chat application built using Streamlit and various AI models for text generation. It allows users to interact with different AI models to generate responses to their queries.
 
-```App on streamlit : ``` https://darkgpt.streamlit.app/ 
+```App on streamlit : ``` [Streamlit](https://darkgpt.streamlit.app/ )
 
 
-```App on hugging Face with more Features : ``` https://huggingface.co/spaces/codewithDark/DarkGPT
+```App on hugging Face with more Features : ``` [Hugging Face](https://huggingface.co/spaces/codewithDark/DarkGPT)
 
 ## Features
 
