@@ -4,6 +4,8 @@ import sqlite3
 import google.generativeai as genai
 import csv
 import os
+#import streamlit.cli as stcli
+from streamlit import cli as stcli
 # import pyttsx3
 import pyperclip
 
