@@ -124,7 +124,7 @@ def main():
             else:
                 try:    
                         # GEMINI Replace with your Gemini Api key
-                        GOOGLE_API_KEY = "AIzaSyC9Qos7UR9jjb5WatykUZumrla8KvTamfE"
+                        GOOGLE_API_KEY = os.getenv('gemini-api')
                         genai.configure(api_key=GOOGLE_API_KEY)
                         model = genai.GenerativeModel(selected_model)
                         prompt = user_input
@@ -150,22 +150,22 @@ def main():
                 except Exception as e:
                      st.error(f"An error occurred: {e}")
 
-            export_to_csv(st.session_state.chat_history)
+            # export_to_csv(st.session_state.chat_history)
 
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
-def export_to_csv(chat_history):
-    filename = "chat_history.csv"
-    latest_conversation = chat_history[-2:]  # Get only the latest conversation
-    with open(filename, "a+", newline="") as csvfile:
-        fieldnames = ["User Input", "Bot Response"]
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        if csvfile.tell() == 0:  # Check if the file is empty
-            writer.writeheader()  # Write header if file is empty
-        if len(latest_conversation) == 2:  # Check if the latest conversation is complete
-            writer.writerow({"User Input": latest_conversation[0]["content"], "Bot Response": latest_conversation[1]["content"]})
+# def export_to_csv(chat_history):
+#     filename = "chat_history.csv"
+#     latest_conversation = chat_history[-2:]  # Get only the latest conversation
+#     with open(filename, "a+", newline="") as csvfile:
+#         fieldnames = ["User Input", "Bot Response"]
+#         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+#         if csvfile.tell() == 0:  # Check if the file is empty
+#             writer.writeheader()  # Write header if file is empty
+#         if len(latest_conversation) == 2:  # Check if the latest conversation is complete
+#             writer.writerow({"User Input": latest_conversation[0]["content"], "Bot Response": latest_conversation[1]["content"]})
 
 def display_conversation(conversation_id):
     c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
