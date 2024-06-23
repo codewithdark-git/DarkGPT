@@ -1,179 +1,70 @@
 import streamlit as st
-from g4f.client import Client
-import sqlite3
-import google.generativeai as genai
-import csv
-import os
-# import pyttsx3
-import pyperclip
 
-
-st.set_page_config(page_title="DarkGPT",
-                   page_icon="🤖",
-                   layout="wide",
-                   initial_sidebar_state="expanded"
+# Set page configuration
+st.set_page_config(
+    page_title="DarkGPT",
+    page_icon="🤖",
+    layout="wide",
+    initial_sidebar_state="expanded"
 )
-def local_css(file_name):
-    with open(file_name) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
+def display_homepage():
+    st.markdown("<h1 style='text-align: center; color: white; font-size: 36px;'>Welcome to DarkGPT! 🧨</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; font-size: 56px;'>🤖</h3>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center; color: grey; font-size: 20px;'>DarkGPT: Your AI text assistant for quick summarization and analysis. Summarize text, analyze complexity, and get insights instantly!</h3>", unsafe_allow_html=True)
 
-local_css("style.css")
+    st.markdown('---')
 
-# Create a connection to the database
-conn = sqlite3.connect('chat_history.db')
-c = conn.cursor()
+    st.markdown("<h3 style='text-align: left; color:#F63366; font-size: 24px;'><b>What is DarkGPT?</b></h3>", unsafe_allow_html=True)
+    st.markdown("""
+        DarkGPT is a versatile AI-powered text assistant designed to enhance your reading and writing experience. 
+        Leveraging advanced natural language processing models, DarkGPT provides two main functionalities:
+        text summarization and text analysis. Whether you need to quickly understand the essence of a lengthy article or 
+        dive deep into the complexity of a text, DarkGPT is here to help.
+    """)
 
-# Create table if not exists
-try:
-    c.execute('''CREATE TABLE IF NOT EXISTS chat_history
-                 (conversation_id INTEGER, role TEXT, content TEXT)''')
-    conn.commit()
-except Exception as e:
-    st.error(f"An error occurred: {e}")
+    st.markdown("<h3 style='text-align: left; color:#F63366; font-size: 24px;'><b>Features</b></h3>", unsafe_allow_html=True)
 
-# Streamlit app
-def main():
-    try:
-        if "chat_history" not in st.session_state:
-            st.session_state.chat_history = []
+    st.markdown("### 🤖 DarkGPT - AI-Powered Chatbot:\n"
+                "DarkGPT is an advanced AI-powered chatbot designed to simulate human-like conversations.\n"
+                "Using state-of-the-art natural language processing models, DarkGPT can understand and generate\n"
+                "responses based on user input, making it ideal for various applications such as customer support,\n"
+                "virtual assistants, and interactive content generation.\n\n"
+                "DarkGPT supports multiple AI models, each tailored for different tasks and levels of complexity.\n"
+                "Users can select from a range of models, including those optimized for general chat, technical queries,\n"
+                "creative writing, and more, providing flexibility and customization to suit specific needs.\n\n"
+                "**Key Features:**\n"
+                "- **AI Models:** Utilizes models like Airoboros 70B and Gemini Pro for robust conversation handling.\n"
+                "- **Natural Language Processing:** Processes user input to generate contextually relevant responses.\n"
+                "- **Chat History:** Stores and retrieves chat history to maintain continuity across sessions.\n"
+                "- **Customization:** Offers options to fine-tune responses and personalize user interaction.\n\n"
+                "Explore DarkGPT's capabilities and start conversing today!", unsafe_allow_html=True)
 
-        if "conversation_id" not in st.session_state:
-            st.session_state.conversation_id = 1
+    st.markdown("### 🔍 Summarization Page:\n"
+                "- **Input Options:** Users can input text directly or upload a text file for summarization.\n"
+                "- **Example Text:** An example text is provided to help users get started quickly.\n"
+                "- **Summarize Button:** Click the 'Summarize' button to generate a summary using the BART model.\n"
+                "- **Error Handling:** Error messages are displayed if the input text length requirements are not met.", unsafe_allow_html=True)
 
-        models = {
-            "🚀 Airoboros 70B": "airoboros-70b",
-            "👑 Gemini 1.0": "gemini-1.0-pro",
-            "🧨 Gemini 1.0 Pro ": "gemini-1.0-pro-001",
-            "⚡ Gemini 1.0 pro latest": "gemini-1.0-pro-latest",
-            "🔮 Gemini Pro": "gemini-pro"
-        }
+    st.markdown("### 📊 Analysis Page:\n"
+                "- **Input Options:** Users can input text directly or upload a text file for analysis.\n"
+                "- **Example Text:** An example text is provided to help users get started quickly.\n"
+                "- **Analyze Button:** Click the 'Analyze' button to generate various metrics such as reading time, text complexity, lexical richness, and number of sentences.\n"
+                "- **Error Handling:** Error messages are displayed if the input text length requirements are not met.", unsafe_allow_html=True)
 
-        columns = st.columns(3)  # Split the layout into three columns
-        with columns[0]:
-            st.header("DarkGPT")
+    footer = '''
+    <footer style="text-align: center; margin-top: 50px; font-family: Arial, sans-serif; color: #555;">
+        <p>Developed by DarkCoder</p>
+        <p>
+            <a href="https://github.com/codewithdark-git" target="_blank" style="text-decoration: none; color: #007bff; margin-right: 10px;">GitHub</a>
+            | <a href="https://www.linkedin.com/in/codewithdark/" target="_blank" style="text-decoration: none; color: #007bff; margin-right: 10px;">Linkedin</a>
+            | <a href="https://www.facebook.com/codewithdark.fb/" target="_blank" style="text-decoration: none; color: #007bff;">Facebook</a>
+        </p>
+    </footer>
+    '''
 
-        with columns[2]:
-
-            selected_model_display_name = st.selectbox("Select Model", list(models.keys()), index=0)
-            selected_model = models[selected_model_display_name]
-
-        with columns[1]:
-            pass
-            # if st.button("summarize"):
-            #     st.switch_page('pages/summarize.py')
-
-        # Sidebar (left side) - New chat button
-        if st.sidebar.button("✨ New Chat", key="new_chat_button"):
-            st.session_state.chat_history.clear()
-            st.session_state.conversation_id += 1
-
-        # Sidebar (left side) - Display saved chat
-        st.sidebar.write("Chat History")
-        c.execute("SELECT DISTINCT conversation_id FROM chat_history")
-        conversations = c.fetchall()
-        for conv_id in reversed(conversations):
-            c.execute("SELECT content FROM chat_history WHERE conversation_id=? AND role='bot' LIMIT 1",
-                      (conv_id[0],))
-            first_bot_response = c.fetchone()
-            if first_bot_response:
-                if st.sidebar.button(" ".join(first_bot_response[0].split()[0:5])):
-                    display_conversation(conv_id[0])
-
-        # Sidebar (left side) - Clear Chat History button
-        if st.sidebar.button("Clear Chat History ✖️"):
-            st.session_state.chat_history.clear()
-            c.execute("DELETE FROM chat_history")
-            conn.commit()
-
-        # Main content area (center)
-        st.markdown("---")
-
-        user_input = st.chat_input("Ask Anything ...")
-
-        if user_input:
-            if selected_model == "airoboros-70b":
-                try:
-                    client = Client()
-                    response = client.chat.completions.create(
-                        model=models[selected_model_display_name],
-                        messages=[{"role": "user", "content": user_input}],
-                    )
-                    bot_response = response.choices[0].message.content
-
-                    st.session_state.chat_history.append({"role": "user", "content": user_input})
-                    st.session_state.chat_history.append({"role": "bot", "content": bot_response})
-
-                    # Store chat in the database
-                    for chat in st.session_state.chat_history:
-                        c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
-                                  (st.session_state.conversation_id, chat["role"], chat["content"]))
-                    conn.commit()
-
-                    # Display chat history
-                    for index, chat in enumerate(st.session_state.chat_history):
-                        with st.chat_message(chat["role"]):
-                            if chat["role"] == "user":
-                                st.markdown(chat["content"])
-                            elif chat["role"] == "bot":
-                                st.markdown(chat["content"])
-
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
-
-            else:
-                try:    
-                        # GEMINI Replace with your Gemini Api key
-                        GOOGLE_API_KEY = os.getenv('gemini-api')
-                        genai.configure(api_key=GOOGLE_API_KEY)
-                        model = genai.GenerativeModel(selected_model)
-                        prompt = user_input
-                        response = model.generate_content(prompt)
-                        bot_response = response.candidates[0].content.parts[0].text
-
-                        st.session_state.chat_history.append({"role": "user", "content": user_input})
-                        st.session_state.chat_history.append({"role": "bot", "content": bot_response})
-
-                        # Store chat in the database
-                        for chat in st.session_state.chat_history:
-                            c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
-                                      (st.session_state.conversation_id, chat["role"], chat["content"]))
-                        conn.commit()
-
-                        for index, chat in enumerate(st.session_state.chat_history):
-                            with st.chat_message(chat["role"]):
-                                if chat["role"] == "user":
-                                    st.markdown(chat["content"])
-                                elif chat["role"] == "bot":
-                                    st.markdown(chat["content"])
-
-                except Exception as e:
-                     st.error(f"An error occurred: {e}")
-
-            # export_to_csv(st.session_state.chat_history)
-
-
-    except Exception as e:
-        st.error(f"An error occurred: {e}")
-
-# def export_to_csv(chat_history):
-#     filename = "chat_history.csv"
-#     latest_conversation = chat_history[-2:]  # Get only the latest conversation
-#     with open(filename, "a+", newline="") as csvfile:
-#         fieldnames = ["User Input", "Bot Response"]
-#         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-#         if csvfile.tell() == 0:  # Check if the file is empty
-#             writer.writeheader()  # Write header if file is empty
-#         if len(latest_conversation) == 2:  # Check if the latest conversation is complete
-#             writer.writerow({"User Input": latest_conversation[0]["content"], "Bot Response": latest_conversation[1]["content"]})
-
-def display_conversation(conversation_id):
-    c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
-    chats = c.fetchall()
-    st.markdown(f"### Conversation")
-    for chat in chats:
-        st.markdown(f"{chat[1]}")
-        st.markdown(f"{chat[2]}")
+    # Display the footer
+    st.markdown(footer, unsafe_allow_html=True)
 
 if __name__ == "__main__":
-    main()
+    display_homepage()
