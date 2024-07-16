@@ -8,7 +8,7 @@
 /dataSources.local.xml
 
 # Ignore local python virtual environment
-venv/
+myenv/
 
 # Ignore streamlit_chat_app.py conversations pickle
 conversations.pkl
