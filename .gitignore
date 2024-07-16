@@ -1,2 +1,30 @@
+# Default ignored files
+/shelf/
+/workspace.xml
+# Editor-based HTTP Client requests
+/httpRequests/
+# Datasource local storage ignored files
+/dataSources/
+/dataSources.local.xml
+
+# Ignore local python virtual environment
+venv/
+
+# Ignore streamlit_chat_app.py conversations pickle
+conversations.pkl
+*.pkl
+
+
 ex.env
-myenv
+
+.idea/
+**/__pycache__/
+__pycache__/
+
+dist/
+*.log
+*.pyc
+*.egg-info/
+*.egg
+*.egg-info
+build
