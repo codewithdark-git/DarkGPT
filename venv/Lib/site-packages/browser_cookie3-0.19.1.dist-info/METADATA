@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: browser-cookie3
+Version: 0.19.1
+Summary: Loads cookies from your browser into a cookiejar object so can download with urllib and other libraries the same content you see in the web browser.
+Home-page: https://github.com/borisbabic/browser_cookie3
+Author: Boris Babic
+Author-email: boris.ivan.babic@gmail.com
+License: lgpl
+License-File: LICENSE
+Requires-Dist: lz4
+Requires-Dist: pycryptodomex
+Requires-Dist: dbus-python ; python_version < "3.7" and ("bsd" in sys_platform or sys_platform == "linux")
+Requires-Dist: jeepney ; python_version >= "3.7" and ("bsd" in sys_platform or sys_platform == "linux")
+

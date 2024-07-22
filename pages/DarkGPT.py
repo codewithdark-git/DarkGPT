@@ -1,18 +1,19 @@
 import streamlit as st
-from g4f.client import Client
+
 import sqlite3
-import google.generativeai as genai
+from utils.get_response import (
+    get_bot_response,
+    display_model_mapping,
+    get_model, get_provider,
+)
 import csv
 import os
 # import pyttsx3
-import pyperclip
+# import pyperclip
 
 
-st.set_page_config(page_title="DarkGPT",
-                   page_icon="🤖",
-                   layout="wide",
-                   initial_sidebar_state="expanded"
-)
+st.set_page_config(page_title="DarkGPT", page_icon="random", layout="wide", initial_sidebar_state="expanded")
+
 def local_css(file_name):
     with open(file_name) as f:
         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
@@ -41,27 +42,34 @@ def main():
         if "conversation_id" not in st.session_state:
             st.session_state.conversation_id = 1
 
+        provider = {
+
+
+        }
+
+
         models = {
             "🚀 Airoboros 70B": "airoboros-70b",
-            "👑 Gemini 1.0": "gemini-1.0-pro",
-            "🧨 Gemini 1.0 Pro ": "gemini-1.0-pro-001",
-            "⚡ Gemini 1.0 pro latest": "gemini-1.0-pro-latest",
-            "🔮 Gemini Pro": "gemini-pro"
+            "🔮 Gemini Pro": "gemini-pro",
+            "👑 Gemini 1.0 pro": "gemini-1.0-pro",
+            "🧨 Gemini 1.0 Pro 001": "gemini-1.0-pro-001",
+            "⚡ Gemini 1.0 pro latest": "gemini-1.0-pro-latest"
         }
 
         columns = st.columns(3)  # Split the layout into three columns
-        with columns[0]:
+
+        with columns[1]:
             st.header("DarkGPT")
 
         with columns[2]:
+            display_model = st.selectbox("Select Model", list(display_model_mapping.keys()), index=0)
+            internal_model = get_model(display_model)
+            provider_name = get_provider(internal_model)
 
-            selected_model_display_name = st.selectbox("Select Model", list(models.keys()), index=0)
-            selected_model = models[selected_model_display_name]
-
-        with columns[1]:
-            pass
-            # if st.button("summarize"):
-            #     st.switch_page('pages/summarize.py')
+        with columns[0]:
+            st.page_link(page='app.py', label='Back to Home', icon='🏠')
+            st.page_link(page='pages/Summarize.py', label='Summarize', icon='📝')
+            
 
         # Sidebar (left side) - New chat button
         if st.sidebar.button("✨ New Chat", key="new_chat_button"):
@@ -92,65 +100,28 @@ def main():
         user_input = st.chat_input("Ask Anything ...")
 
         if user_input:
-            if selected_model == "airoboros-70b":
-                try:
-                    client = Client()
-                    response = client.chat.completions.create(
-                        model=models[selected_model_display_name],
-                        messages=[{"role": "user", "content": user_input}],
-                    )
-                    bot_response = response.choices[0].message.content
+            try:
+                bot_response = get_bot_response(user_input, internal_model, provider_name)
 
-                    st.session_state.chat_history.append({"role": "user", "content": user_input})
-                    st.session_state.chat_history.append({"role": "bot", "content": bot_response})
+                st.session_state.chat_history.append({"role": "user", "content": user_input})
+                st.session_state.chat_history.append({"role": "bot", "content": bot_response})
 
                     # Store chat in the database
-                    for chat in st.session_state.chat_history:
-                        c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
+                for chat in st.session_state.chat_history:
+                    c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
                                   (st.session_state.conversation_id, chat["role"], chat["content"]))
                     conn.commit()
 
                     # Display chat history
-                    for index, chat in enumerate(st.session_state.chat_history):
+                for index, chat in enumerate(st.session_state.chat_history):
                         with st.chat_message(chat["role"]):
                             if chat["role"] == "user":
                                 st.markdown(chat["content"])
                             elif chat["role"] == "bot":
                                 st.markdown(chat["content"])
 
-                except Exception as e:
-                    st.error(f"An error occurred: {e}")
-
-            else:
-                try:
-                        # GEMINI Replace with your Gemini Api key
-                        GOOGLE_API_KEY = os.getenv('gemini-api')
-                        genai.configure(api_key=GOOGLE_API_KEY)
-                        model = genai.GenerativeModel(selected_model)
-                        prompt = user_input
-                        response = model.generate_content(prompt)
-                        bot_response = response.candidates[0].content.parts[0].text
-
-                        st.session_state.chat_history.append({"role": "user", "content": user_input})
-                        st.session_state.chat_history.append({"role": "bot", "content": bot_response})
-
-                        # Store chat in the database
-                        for chat in st.session_state.chat_history:
-                            c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
-                                      (st.session_state.conversation_id, chat["role"], chat["content"]))
-                        conn.commit()
-
-                        for index, chat in enumerate(st.session_state.chat_history):
-                            with st.chat_message(chat["role"]):
-                                if chat["role"] == "user":
-                                    st.markdown(chat["content"])
-                                elif chat["role"] == "bot":
-                                    st.markdown(chat["content"])
-
-                except Exception as e:
-                     st.error(f"An error occurred: {e}")
-
-            # export_to_csv(st.session_state.chat_history)
+            except Exception as e:
+                st.error(f"An error occurred: {e}")
 
 
     except Exception as e:
