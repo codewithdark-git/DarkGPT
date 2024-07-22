@@ -9,11 +9,20 @@ st.set_page_config(
 
 )
 
-def display_homepage():
+
+def main():
+    # Set the page title and favicon
+
     st.markdown("<h1 style='text-align: center; color: white; font-size: 36px;'>Welcome to DarkGPT! 🧨</h1>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center; font-size: 56px;'>🤖</h3>", unsafe_allow_html=True)
     st.markdown("<h3 style='text-align: center; color: grey; font-size: 20px;'>DarkGPT: Your AI text assistant for quick summarization and analysis. Summarize text, analyze complexity, and get insights instantly!</h3>", unsafe_allow_html=True)
 
+    st.write('Choose an option below to get started!')
+
+    if st.button("DarkGPT"):
+        st.switch_page(page='pages/DarkGPT.py')
+    elif st.button("Summarize"):
+        st.switch_page(page='pages/Summarize.py')
     st.markdown('---')
 
     st.markdown("<h3 style='text-align: left; color:#F63366; font-size: 24px;'><b>What is DarkGPT?</b></h3>", unsafe_allow_html=True)
@@ -68,4 +77,4 @@ def display_homepage():
     st.markdown(footer, unsafe_allow_html=True)
 
 if __name__ == "__main__":
-    display_homepage()
+    main()
