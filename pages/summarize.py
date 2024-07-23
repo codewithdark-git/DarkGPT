@@ -17,8 +17,10 @@ def summarize_text(input_text):
     summarized_text = summarizer(input_text, max_length=10050, min_length=50, do_sample=False)[0]['summary_text']
     return summarized_text
 
+
 # Function to analyze text and return metrics
 def analyze_text(input_text):
+
     nltk.download('punkt')
     tokenized_words = word_tokenize(input_text)
     reading_time = readtime.of_text(input_text)
@@ -32,6 +34,7 @@ def analyze_text(input_text):
         'num_sentences': num_sentences
     }
     return analysis_results
+
 
 # Function to display the homepage
 def display_homepage():
@@ -78,6 +81,7 @@ def display_homepage():
     # Display the footer
     st.markdown(footer, unsafe_allow_html=True)
 
+
 # Function to display the text summarization page
 def display_summarization_page():
     st.markdown("<h4 style='text-align: center; color:grey;'>Accelerate knowledge with DarkGPT &#129302;</h4>", unsafe_allow_html=True)
@@ -113,6 +117,7 @@ def display_summarization_page():
                 summarized_text = summarize_text(string_data)
                 st.success(summarized_text)
                 st.balloons()
+
 
 # Function to display the text analysis page
 def display_analysis_page():
@@ -156,6 +161,7 @@ def display_analysis_page():
                 st.write('Number of Sentences:', analysis_results['num_sentences'])
                 st.balloons()
 
+
 # Main function to run the Streamlit app
 def main():
     st.sidebar.header('DarkGPT, I want to :crystal_ball:')
@@ -169,6 +175,7 @@ def main():
         display_summarization_page()
     elif nav == 'Analyze text':
         display_analysis_page()
+
 
 if __name__ == "__main__":
     main()
