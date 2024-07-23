@@ -1,5 +1,4 @@
 import streamlit as st
-
 import sqlite3
 from utils.get_response import (
     get_bot_response,
@@ -8,11 +7,10 @@ from utils.get_response import (
 )
 import csv
 import os
-# import pyttsx3
-# import pyperclip
 
 
 st.set_page_config(page_title="DarkGPT", page_icon="random", layout="wide", initial_sidebar_state="expanded")
+
 
 def local_css(file_name):
     with open(file_name) as f:
@@ -33,7 +31,7 @@ try:
 except Exception as e:
     st.error(f"An error occurred: {e}")
 
-# Streamlit app
+
 def main():
     try:
         if "chat_history" not in st.session_state:
@@ -41,20 +39,6 @@ def main():
 
         if "conversation_id" not in st.session_state:
             st.session_state.conversation_id = 1
-
-        provider = {
-
-
-        }
-
-
-        models = {
-            "🚀 Airoboros 70B": "airoboros-70b",
-            "🔮 Gemini Pro": "gemini-pro",
-            "👑 Gemini 1.0 pro": "gemini-1.0-pro",
-            "🧨 Gemini 1.0 Pro 001": "gemini-1.0-pro-001",
-            "⚡ Gemini 1.0 pro latest": "gemini-1.0-pro-latest"
-        }
 
         columns = st.columns(3)  # Split the layout into three columns
 
@@ -69,7 +53,6 @@ def main():
         with columns[0]:
             st.page_link(page='app.py', label='Back to Home', icon='🏠')
             st.page_link(page='pages/Summarize.py', label='Summarize', icon='📝')
-
 
         # Sidebar (left side) - New chat button
         if st.sidebar.button("✨ New Chat", key="new_chat_button"):
@@ -106,37 +89,25 @@ def main():
                 st.session_state.chat_history.append({"role": "user", "content": user_input})
                 st.session_state.chat_history.append({"role": "bot", "content": bot_response})
 
-                    # Store chat in the database
                 for chat in st.session_state.chat_history:
                     c.execute("INSERT INTO chat_history VALUES (?, ?, ?)",
-                                  (st.session_state.conversation_id, chat["role"], chat["content"]))
+                    (st.session_state.conversation_id, chat["role"], chat["content"]))
                     conn.commit()
 
-                    # Display chat history
+                # Display chat history
                 for index, chat in enumerate(st.session_state.chat_history):
-                        with st.chat_message(chat["role"]):
-                            if chat["role"] == "user":
-                                st.markdown(chat["content"])
-                            elif chat["role"] == "bot":
-                                st.markdown(chat["content"])
+                    with st.chat_message(chat["role"]):
+                        if chat["role"] == "user":
+                            st.markdown(chat["content"])
+                        elif chat["role"] == "bot":
+                            st.markdown(chat["content"])
 
             except Exception as e:
                 st.error(f"An error occurred: {e}")
 
-
     except Exception as e:
         st.error(f"An error occurred: {e}")
 
-# def export_to_csv(chat_history):
-#     filename = "chat_history.csv"
-#     latest_conversation = chat_history[-2:]  # Get only the latest conversation
-#     with open(filename, "a+", newline="") as csvfile:
-#         fieldnames = ["User Input", "Bot Response"]
-#         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-#         if csvfile.tell() == 0:  # Check if the file is empty
-#             writer.writeheader()  # Write header if file is empty
-#         if len(latest_conversation) == 2:  # Check if the latest conversation is complete
-#             writer.writerow({"User Input": latest_conversation[0]["content"], "Bot Response": latest_conversation[1]["content"]})
 
 def display_conversation(conversation_id):
     c.execute("SELECT * FROM chat_history WHERE conversation_id=?", (conversation_id,))
@@ -145,6 +116,7 @@ def display_conversation(conversation_id):
     for chat in chats:
         st.markdown(f"{chat[1]}")
         st.markdown(f"{chat[2]}")
+
 
 if __name__ == "__main__":
     main()
