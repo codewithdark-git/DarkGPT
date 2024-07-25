@@ -52,7 +52,7 @@ def main():
 
         with columns[0]:
             st.page_link(page='app.py', label='Back to Home', icon='🏠')
-            st.page_link(page='pages/Summarize.py', label='Summarize', icon='📝')
+            st.page_link(page='pages/summarize.py', label='Summarize', icon='📝')
 
         # Sidebar (left side) - New chat button
         if st.sidebar.button("✨ New Chat", key="new_chat_button"):
