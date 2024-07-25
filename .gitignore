@@ -16,7 +16,7 @@ conversations.pkl
 *.pkl
 
 
-ex.env
+.env
 
 .idea/
 **/__pycache__/
