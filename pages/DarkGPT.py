@@ -68,7 +68,7 @@ def main():
                       (conv_id[0],))
             first_bot_response = c.fetchone()
             if first_bot_response:
-                if st.sidebar.button(" ".join(first_bot_response[0].split()[0:5])):
+                if st.sidebar.button(" ".join(first_bot_response[0].split()[0:5]), key=f"button_{conv_id[0]}"):
                     display_conversation(conv_id[0])
 
         # Sidebar (left side) - Clear Chat History button
