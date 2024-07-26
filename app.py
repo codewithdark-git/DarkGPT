@@ -18,11 +18,13 @@ def main():
     st.markdown("<h3 style='text-align: center; color: grey; font-size: 20px;'>DarkGPT: Your AI text assistant for quick summarization and analysis. Summarize text, analyze complexity, and get insights instantly!</h3>", unsafe_allow_html=True)
 
     st.write('Choose an option below to get started!')
-
-    if st.button("DarkGPT"):
-        st.switch_page(page='pages/DarkGPT.py')
-    elif st.button("Summarize"):
-        st.switch_page(page='pages/Summarize.py')
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("DarkGPT"):
+            st.switch_page(page='pages/DarkGPT.py')
+    with col2:
+        if st.button("Summarize"):
+            st.switch_page(page='pages/Summarize.py')
     st.markdown('---')
 
     st.markdown("<h3 style='text-align: left; color:#F63366; font-size: 24px;'><b>What is DarkGPT?</b></h3>", unsafe_allow_html=True)
