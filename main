@@ -1,0 +1,77 @@
+from fastapi import FastAPI, Body
+from pydantic import BaseModel
+import sqlite3
+from .pages.DarkGPT import get_bot_response, get_model, get_provider, display_model_mapping
+from .pages.summarize import summarize_text, analyze_text
+
+app = FastAPI()
+
+# Create a connection to the database
+conn = sqlite3.connect('chat_history.db')
+c = conn.cursor()
+
+# Create a class to represent the chat request
+class ChatRequest(BaseModel):
+    user_input: str
+    model_name: str
+
+# Create a class to represent the chat response
+class ChatResponse(BaseModel):
+    bot_response: str
+
+# Create a class to represent the summary request
+class SummaryRequest(BaseModel):
+    input_text: str
+
+# Create a class to represent the summary response
+class SummaryResponse(BaseModel):
+    summarized_text: str
+
+# Create a class to represent the analysis request
+class AnalysisRequest(BaseModel):
+    input_text: str
+
+# Create a class to represent the analysis response
+class AnalysisResponse(BaseModel):
+    reading_time: str
+    text_complexity: str
+    lexical_richness: str
+    num_sentences: str
+
+# Create an endpoint for the chatbot
+@app.post("/chat", response_model=ChatResponse)
+async def chat(request: ChatRequest = Body(...)):
+    try:
+        internal_model = get_model(request.model_name)
+        provider_name = get_provider(internal_model)
+        bot_response = get_bot_response(request.user_input, internal_model, provider_name)
+        # Save the chat history to the database
+        c.execute("INSERT INTO chat_history VALUES (?, ?, ?)", (1, "user", request.user_input))
+        c.execute("INSERT INTO chat_history VALUES (?, ?, ?)", (1, "bot", bot_response))
+        conn.commit()
+        return {"bot_response": bot_response}
+    except Exception as e:
+        return {"error": str(e)}
+
+# Create an endpoint for the summarization
+@app.post("/summarize", response_model=SummaryResponse)
+async def summarize(request: SummaryRequest = Body(...)):
+    try:
+        summarized_text = summarize_text(request.input_text)
+        return {"summarized_text": summarized_text}
+    except Exception as e:
+        return {"error": str(e)}
+
+# Create an endpoint for the analysis
+@app.post("/analyze", response_model=AnalysisResponse)
+async def analyze(request: AnalysisRequest = Body(...)):
+    try:
+        analysis_results = analyze_text(request.input_text)
+        return {
+            "reading_time": analysis_results["reading_time"],
+            "text_complexity": analysis_results["text_complexity"],
+            "lexical_richness": analysis_results["lexical_richness"],
+            "num_sentences": analysis_results["num_sentences"]
+        }
+    except Exception as e:
+        return {"error": str(e)}
