@@ -1,20 +1,20 @@
-# Use an official Python runtime as a parent image
-FROM python:3.10-slim
+# Use the official Node.js image as a base
+FROM node:14
 
-# Set the working directory in the container
+# Set the working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Copy package.json and package-lock.json
+COPY frontend/package*.json ./
 
-# Install any needed packages specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+# Install dependencies
+RUN npm install
 
-# Make port 8501 available to the world outside this container
-EXPOSE 8501
+# Copy the rest of the application code
+COPY . .
 
-# Define environment variable
-ENV NAME DARKCODER
+# Expose the port the app runs on
+EXPOSE 3000
 
-# Run app.py when the container launches
-CMD ["streamlit", "run", "app.py", "--server.port", "8501"]
+# Command to run the application
+CMD ["npm", "run", "dev"]
