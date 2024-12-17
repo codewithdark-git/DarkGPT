@@ -9,8 +9,13 @@
 
 # Ignore local python virtual environment
 
-.venv
+venv
 env/
+
+# Ignore the node_modules folder
+node_modules/
+
+
 
 # Ignore streamlit_chat_app.py conversations pickle
 conversations.pkl

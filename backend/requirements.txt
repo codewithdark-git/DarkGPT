@@ -1,0 +1,9 @@
+Flask
+langchain
+langchain-groq
+openai
+chromadb
+sqlalchemy
+protobuf
+typing-extensions
+tokenizers==0.13.3
